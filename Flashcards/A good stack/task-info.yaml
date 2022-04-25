@@ -199,5 +199,8 @@ files:
         FlashcardsTest("flashcards.flashcards").run_tests()
   learner_created: false
 feedback_link: https://hyperskill.org/projects/127/stages/676/implement#comment
-status: Unchecked
+status: Solved
+feedback:
+  message: Congratulations!
+  time: Mon, 25 Apr 2022 04:19:15 UTC
 record: -1
