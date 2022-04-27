@@ -1,4 +1,5 @@
 from io import StringIO
+import argparse
 
 
 class FlashCard:
@@ -40,10 +41,13 @@ class FlashCard:
             print(f'Can\'t remove "{term}": there is no such card.')
             print(f'Can\'t remove "{term}": there is no such card.\n', file=self.memory_file)
 
-    def export_cards(self):
-        file_name = input('File name:\n')
-        log_str = self.memory_file.read()
-        self.memory_file.write('File name:\n' + log_str + file_name + '\n')
+    def export_cards(self, name=None):
+        if name:
+            file_name = name
+        else:
+            file_name = input('File name:\n')
+            log_str = self.memory_file.read()
+            self.memory_file.write('File name:\n' + log_str + file_name + '\n')
         with open(file_name, 'w') as card_file:
             n = 0
             for term in self.term_def:
@@ -52,16 +56,19 @@ class FlashCard:
         print(f'{n} cards have been saved.')
         print(f'{n} cards have been saved.\n', file=self.memory_file)
 
-    def import_cards(self):
-        file_name = input('File name:\n')
-        log_str = self.memory_file.read()
-        self.memory_file.write('File name:\n' + log_str + file_name + '\n')
+    def import_cards(self, name=None):
+        if name:
+            file_name = name
+        else:
+            file_name = input('File name:\n')
+            log_str = self.memory_file.read()
+            self.memory_file.write('File name:\n' + log_str + file_name + '\n')
         try:
             with open(file_name, 'r') as card_file:
                 cards = card_file.readlines()
             for card in cards:
                 term, definition, wrong_time = card.strip('\n').split(':')
-                self.term_def[term] = [definition, wrong_time]
+                self.term_def[term] = [definition, int(wrong_time)]
             print(f'{len(cards)} cards have been loaded.')
             print(f'{len(cards)} cards have been loaded.\n', file=self.memory_file)
         except FileNotFoundError:
@@ -125,6 +132,12 @@ class FlashCard:
             print('The log has been saved.')
             print('The log has been saved.', file=log)
 
+    def parse_args(self):
+        parser = argparse.ArgumentParser()
+        parser.add_argument('--import_from', default=None)
+        parser.add_argument('--export_to', default=None)
+        return parser.parse_args()
+
     def menu(self):
         action = input('Input the action (add, remove, import, export, ask, exit, log, hardest card, reset stats):\n')
         log_str = self.memory_file.read()
@@ -151,7 +164,12 @@ class FlashCard:
             self.memory_file.write('Input the action (add, remove, import, export, ask, exit, log, hardest card, reset stats):\n' + log_str + action + '\n')
         print('bye bye')
         print('bye bye\n', file=self.memory_file)
+        if flash_card.parse_args().export_to:
+            self.export_cards(flash_card.parse_args().export_to)
 
 
 flash_card = FlashCard()
+im_export_option = flash_card.parse_args()
+if im_export_option.import_from:
+    flash_card.import_cards(im_export_option.import_from)
 flash_card.menu()
