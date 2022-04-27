@@ -1,4 +1,3 @@
-import logging
 from io import StringIO
 
 
@@ -62,7 +61,7 @@ class FlashCard:
                 cards = card_file.readlines()
             for card in cards:
                 term, definition, wrong_time = card.strip('\n').split(':')
-                self.term_def[term] = definition, wrong_time
+                self.term_def[term] = [definition, wrong_time]
             print(f'{len(cards)} cards have been loaded.')
             print(f'{len(cards)} cards have been loaded.\n', file=self.memory_file)
         except FileNotFoundError:
